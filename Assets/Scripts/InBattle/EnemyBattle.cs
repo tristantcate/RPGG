@@ -42,14 +42,24 @@ public class EnemyBattle : BattleParticipant
 
     }
 
-    public IEnumerator ProcessAnimation(BattleState a_battleState, Vector3 a_moveSprite, float a_waitTime)
+    public IEnumerator ProcessAnimation(BattleState a_battleState, Vector3 a_moveSprite, float a_waitForAttackTime, float a_damagedTime)
     {
+
         m_statsBox.SetActive(false);
+
+
+
         if (a_battleState == BattleState.Attack) m_spriteRenderer.sprite = enemyPrototype.GetAttackSprite();
-        if (a_battleState == BattleState.Hurt) m_spriteRenderer.sprite = enemyPrototype.GetHurtSprite();
+        if (a_battleState == BattleState.Hurt)
+        {
+            yield return new WaitForSeconds(a_waitForAttackTime);
+            m_spriteRenderer.sprite = enemyPrototype.GetHurtSprite();
+
+        }
+
         transform.position += a_moveSprite;
 
-        yield return new WaitForSeconds(a_waitTime);
+        yield return new WaitForSeconds(a_damagedTime);
 
         transform.position -= a_moveSprite;
         m_spriteRenderer.sprite = enemyPrototype.GetIdleSprite();

@@ -7,12 +7,20 @@ public abstract class BattleParticipant : MonoBehaviour
 {
     [SerializeField] protected BattleStats m_battleStats;
 
+    //Change into currentBattleStats, as all stats can potentially be temporarily affected!
     [HideInInspector] public int currentHealth;
     [HideInInspector] public int currentMana;
 
     [SerializeField] protected GameObject m_statsBox;
     [SerializeField] private Text m_nameText;
-    [SerializeField] private Text m_healthText;
+    [Space(8)]
+    [SerializeField] private Text m_currentHealthText;
+    [SerializeField] private Text m_maxHealthText;
+    [SerializeField] private Text m_currentManaText;
+    [SerializeField] private Text m_maxManaText;
+    [Space(8)]
+    [SerializeField] private Image m_healthBar;
+    [SerializeField] private Image m_manaBar;
 
     protected BattleMove temp_chosenMove;
     protected BattleParticipant temp_target;
@@ -32,7 +40,16 @@ public abstract class BattleParticipant : MonoBehaviour
     protected void UpdateHealthUI()
     {
         //Advanced healthbars etc later.
-        m_healthText.text = string.Format("Health: {0}/{1}", currentHealth, m_battleStats.maxHealth);
+        m_currentHealthText.text = string.Format("{0}", currentHealth);
+        m_maxHealthText.text = string.Format("{0}", m_battleStats.maxHealth);
+        m_healthBar.fillAmount = currentHealth / (float) m_battleStats.maxHealth;
+    }
+
+    protected void UpdateManaUI()
+    {
+        //Advanced healthbars etc later.
+        m_currentManaText.text = string.Format("{0}", currentMana);
+        m_maxManaText.text = string.Format("{0}", m_battleStats.maxMana);
     }
 
     public abstract IEnumerator WaitForBattleMove(List<BattleParticipant> a_possibleTargets);

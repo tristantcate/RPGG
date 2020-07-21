@@ -18,6 +18,10 @@ public class BattleSystem : MonoBehaviour
 
     private BattleUI m_battleUI;
 
+    //Make a neater way of storing player attack effects and initiating them into battle,
+    //For now, simply spawn and make stuff work
+    [SerializeField] private GameObject sliceEffect;
+
     private void Awake()
     {
         m_battleUI = GetComponent<BattleUI>();
@@ -95,9 +99,15 @@ public class BattleSystem : MonoBehaviour
 
                 //Animation
                 EnemyBattle enemyChosen = chosenTarget as EnemyBattle;
-                if (enemyChosen) StartCoroutine(enemyChosen.ProcessAnimation(EnemyBattle.BattleState.Hurt, Vector3.up * 0.3f, 0.3f));
+                if (enemyChosen)
+                {
+                    Destroy(Instantiate(sliceEffect, enemyChosen.transform.position, Quaternion.identity, enemyChosen.transform), 0.33f);
+
+                    yield return StartCoroutine(enemyChosen.ProcessAnimation(EnemyBattle.BattleState.Hurt, Vector3.up * 0.3f, 0.15f, 0.5f));
+                }
+
                 EnemyBattle enemyFighting = participant as EnemyBattle;
-                if (enemyFighting) StartCoroutine(enemyFighting.ProcessAnimation(EnemyBattle.BattleState.Attack, Vector3.down * 0.5f, 0.5f));
+                if (enemyFighting) yield return StartCoroutine(enemyFighting.ProcessAnimation(EnemyBattle.BattleState.Attack, Vector3.down * 0.5f, 0.0f, 0.5f));
 
                 //Process damage, more elaborate later on.
                 int processedDamage;
